@@ -295,14 +295,228 @@ cout<<arr<<endl;             //获取数组在内存中的首地址 数组名是
 函数调用时将实参的数值传入形参。
 
 因为，实参会分配一块内存空间，值传递时形参也会分配一块内存空间，所以形参发生改变，不会影响实参。
+### 函数的声明
+```
+返回类型 函数名 （参数列表）;
+```
+函数的声明可以多次，定义只能有一次
+### 函数的份文件编写
+```
+1.创建后缀名为.h的头文件
+2.创建后缀名为.cpp的源文件
+3.在头文件中写函数声明
+4.在头文件中写函数定义
+```
+写函数声明时要包括include的库，.cpp中要#include  .h 文件。使用时#include  .h 文件即可。
+
+```
+#include " "  双引号代表文件是自己写的
+```
+## 7 指针
+可以通过指针简介访问内存（指针就是一个地址）
+### 指针的定义
+数据类型 * 变量名
+```
+int a = 10;
+int *p;
+p = &a;             // &取地址
+cout<<*p<<endl;     // *解引用
+```
+### 指针所占用的内存空间
+指针也是种数据类型
+
+在32位（x86）操作系统下，指针占4个字节空间大小，不管什么数据。
+
+在64位（x64）操作系统下，指针占8个字节空间大小。
+### 空指针
+空指针用于给指针变量初始化
+```
+int *p = NULL;
+```
+空指针是不可以访问的，0~255之间的内存编号是系统占用的，因此不可以访问。
+### 野指针
+指针指向非法的内存空间
+```
+int *p = (int*)0x1100;
+cout<<*p<<endl;   //访问野指针会报错
+```
+空指针和野指针都不是我们申请的空间，因此不要访问它。
+### const 修饰指针
+```
+int a = 10;
+int b = 20;
+//const 修饰指针 常量指针
+const int * p1 = &a;
+//常量指针 指针指向的值不可以改，指针的指向可以改
+p1 = &b;    // *p1 = 20;错误
+int * const p2 = &a;
+//指针常量 指针的值可以改，指针的指向不可以改
+*p2 = 100;  //p2 = &b; 错误 
+//const 修饰指针和常量
+const int* const p3 = &a;
+//*p3 = 100 ; p3 = &b; 错误
+```
+看const后跟的是指针还是常量，是指针就是常量指针，是常量就是指针常量。
+### 指针和数组
+利用指针访问数组中的元素
+```
+int arr[5]={1,2,3,4,5};
+int *p = arr;
+for(int i=0;i<5;++i){
+  cout<<*p<<endl;
+  ++p;    //这里是整型指针，相当于往后移动4个字节。 解引用的时候也是解4个字节。
+}
+```
+### 地址传递 
+可以修改实参
+```
+void swap(int *p1,int *p2);
 
 
+int num1 = 10;
+int num2 = 20;
+swap(&num1,&num2)  //指针p1保存的num1的地址，p2保存的num2的地址  解引用*p1就是找p1内存指向的数据。
+```
+如果不想修改实参就用值传递，想修改实参就用地址传递。
 
+函数中的形参改为指针可以节省内存空间，而且不会复制新的副本出来。
+## 8 结构体
+### 定义和使用
+```
+struct 结构体名 {
+  结构体成员列表
+}；
+```
+创建结构体变量的方式：
+```
+struct 结构体名 变量名;
+struct 结构体名 变量名{成员1值，成员2值...};
+定义结构体时顺便定义变量： struct 结构体名{结构体成员列表} 变量;
+```
+定义结构体时，struct关键词不可以省略；创建时可以省。结构体变量通过操作符“.”访问成员。
+### 结构体数组
+将结构体放入数组中方便维护
+```
+struct 结构体名称 数组名[] = { {},{},...{} };    //创建方式结合数组的定义还有结构体的定义就行
+```
+### 结构体指针
+利用->操作符通过结构体指针访问结构体属性。
+### 嵌套结构体
+结构体中的成员可以是另一个结构体。
+### 结构体做函数参数
+值传递  地址传递
+### const 结构体
+加入const之后一旦有修改操作就会报错，防止误操作。
+```
+void printStudent(const student * stu){ }
+```
+### 结构体案例1
 
+学校正在做毕设项目，每名老师带领5个学生，总共有3名老师，需求如下
 
+设计学生和老师的结构体，其中在老师的结构体中，有老师姓名和一个存放5名学生的数组作为成员
 
+学生的成员有姓名、考试分数，创建数组存放3名老师，通过函数给每个老师及所带的学生赋值
 
+最终打印出老师数据以及老师所带的学生数据。
 
+```ruby
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct student {
+	string name;
+	int score;
+};
+struct teacher {
+	string name;
+	student sArray[5];
+};
+void allocateSpace(teacher tArray[], int len) {
+	for (int i = 0; i < len; ++i) {
+		string nameSeed = "ABCDE";
+		tArray[i].name = "teacher_";
+		tArray[i].name += nameSeed[i];
+		for (int j = 0; j < 5; ++j) {
+			tArray[i].sArray[j].name = "student_";
+			tArray[i].sArray[j].name += nameSeed[j];   //起名字方式很好
+			int random = rand() % 61 + 40;
+			tArray[i].sArray[j].score = random;
+		}
+	}
+}
+void printTeachers(teacher tArray[], int len) {
+	for (int i = 0; i < len; ++i) {
+		cout << tArray[i].name << ":" << endl;
+		for (int j = 0; j < 5; ++j) {
+			cout <<"\t"<< tArray[i].sArray[j].name << " : " << tArray[i].sArray[j].score << endl;
+		}
+	}
+}
+
+int main() {
+	srand((unsigned int)time(NULL));
+	teacher tArray[3];
+	int len = sizeof(tArray) / sizeof(tArray[0]);
+	allocateSpace(tArray, len);
+	printTeachers(tArray,len);
+
+	system("pause");
+	return 0;
+}
+```
+### 结构体案例2 
+设计一个英雄的结构体，包括成员姓名，年龄，性别;创建结构体数组，数组中存放5名英雄。
+
+通过冒泡排序的算法，将数组中的英雄按照年龄进行升序排序，最终打印排序后的结果。
+```ruby
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct hero {
+	string name;
+	int age;
+	string sex;
+};
+
+void printHero(hero hArray[], int hlen) {
+	for (int i = 0; i < hlen; ++i) {
+		cout << hArray[i].name << " " << hArray[i].age << " " << hArray[i].sex << endl;
+	}
+}
+
+void bubbleSortHero(hero hArray[], int len) {
+	for (int i = 0; i < len - 1; ++i) {
+		for (int j = 0; j < len - 1 - i; ++j) {
+			if (hArray[j].age > hArray[j + 1].age) {
+				hero tempHero = hArray[j];
+				hArray[j] = hArray[j + 1];
+				hArray[j + 1] = tempHero;
+			}
+		}
+	}
+}
+
+int main() {
+	hero hArray[5] = {
+		{"刘备",23,"男"},
+		{"关羽",22,"男"},
+		{"张飞",20,"男"},
+		{"赵云",21,"男"},
+		{"貂蝉",18,"女"}
+	};
+	int hlen = sizeof(hArray) / sizeof(hArray[0]);
+	printHero(hArray, hlen);
+	bubbleSortHero(hArray, hlen);
+	cout << endl;
+	printHero(hArray, hlen);
+
+	system("pause");
+	return 0;
+}
+```
 
 
 
