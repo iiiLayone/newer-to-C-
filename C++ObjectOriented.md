@@ -1015,16 +1015,98 @@ class 子类:继承方式 父类
 - 私有继承
 
 父类中的私有内容子类无论哪种继承方式都无法访问
-![image]()
+![image](https://github.com/iyi111111/CPPLearning/blob/main/cppimage/%E7%BB%A7%E6%89%BF.png)
+#### 继承中的对象模型
+```
+class Base{
+public:
+   int m_A;
+protected:
+   int m_B;
+private:
+   int m_C;
+};
 
+class Son:public Base{
+public:
+   int m_D;
 
+};
+void test01(){
+   Son son1;
+   cout<<sizeof(son1)<<endl;
+   //父类中所有的非静态成员属性都会被子类继承下去
+   //父类中的私有成员属性是被编译器隐藏了，因此访问不到，但是确实被继承了
+}
+```
+#### 继承中构造和析构顺序
+继承中 先调用父类构造函数，再调用子类构造函数，析构顺序与构造相反
+#### 继承同名成员处理方式
+* 访问子类同名成员   直接访问即可
+* 访问父类同名成员   需要加作用域
 
+**如果子类中出现和父类同名的成员函数，子类的同名成员会隐藏掉父类中所有的同名成员函数。如果想访问父类中被隐藏的同名成员函数，需要加作用域**
+```
+son.Base::m_A;
+son.Base::func();
+son.Base::func(100);
+```
+#### 继承同名静态成员处理方式
+静态成员和非静态成员出现同名，处理方式一致
 
+- 访问子类同名成员   直接访问即可
+- 访问父类同名成员   需要加作用域
+```
+class Base{
+public:
+   static int m_A;
+   static void func(){
+      cout<<"Base"<<endl;
+   }
+};
+int Base::m_A = 100;
+class Son:public Base{
 
+public:
+  static int m_A;
+  static void func(){
+      cout<<"Son"<<endl;
+   }
+};
+int Son::m_A = 200;
 
+void test01(){
+   Son son1;
+   // 通过对象访问
+   cout<<son1.m_A<<endl;
+   cout<<son1.Base::m_A<<endl;
+   // 通过类名访问
+   cout<<Son::m_A<<endl;
+   cout<<Base::m_A<<endl;
+   cout<<Son::Base::m_A<<endl;
+   // 通过子类对象访问到父类对象 通过类名
+   // 第一个:: 代表通过类名的方式访问
+   // 第二个:: 代表访问父类作用域下
+}
+void test02(){
+   Son s;
+   //通过对象访问
+   s.func();
+   s.Base::func();
+   //通过类名访问
+   Son::func();
+   Son::Base::func();
+   //
+}
+```
+####  多继承语法
+C++允许**一个类继承多个类**
+```
+class 子类  继承方式 父类1, 继承方式 父类2...
+```
+多继承可能会引发父类中有同名成员出现，需要加作用域区分
 
-
-
+C++实际开发中不建议用多继承
 
 
 
