@@ -684,7 +684,7 @@ void test1(){
 全局函数调用类的私有属性
 ```
 class 类名{
-   friend + 函数声明；
+   friend + 函数声明;
 }
 ```
 实例
@@ -728,6 +728,66 @@ class 类1{
 class 类1{
    friend 返回类型 类2::函数名(参数值);
    //告诉编译器，类2中的成员函数可以访问类1的私有内容
+}
+```
+注意：因为GoodGay中定义b要用到Building，Building要声明在GoodGay的前面。
+
+GoodGay::visit1()访问需要用到友元，就需要友元在visit01()前。
+
+Building要想知道GoodGay哪个函数是自己的友元需要GoodGay定义在Building前面。
+
+所以需要分开定义visit01类内定义，类外实现。
+
+```
+定义创建了对象并且分配了内存，声明没有分配内存。
+```
+```
+class Building;
+class GoodGay {
+public:
+	GoodGay();
+	void visit1();
+	void visit2();
+private:
+	Building* b;
+};
+
+class Building {
+	friend void GoodGay::visit1();
+private:
+	string BedRoom;
+public:
+	string SittingRoom;
+public:
+	Building():BedRoom("卧室"), SittingRoom("客厅") {}
+};
+
+GoodGay::GoodGay()
+{
+	b = new Building;
+}
+
+void GoodGay::visit1() {
+	cout << b->SittingRoom << endl;
+	cout << b->BedRoom << endl;
+}
+
+void GoodGay::visit2() {
+	cout << b->SittingRoom << endl;
+	//cout << b->BedRoom << endl;
+}
+
+void test01()
+{
+	GoodGay  g;
+	g.visit1();
+}
+
+int main() {
+	test01();
+
+	system("pause");
+	return 0;
 }
 ```
 ### 运算符重载
