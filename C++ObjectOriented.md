@@ -38,8 +38,8 @@ return p;
 ```
 在堆区利用new开辟数组
 ```
-int *p = new int(10);     //小括号创建一个变量
-int *array= new int [10]; //中括号创建一个有10个变量的数组
+int *p = new int(10);       //小括号创建一个变量
+int *array = new int [10];  //中括号创建一个有10个变量的数组
 delete[] array;             //释放数组 delete后加[] 
 ```
 ## 引用
@@ -191,7 +191,7 @@ C++面向对象的三大特性为：**封装**、**继承**、**多态**
 #### 封装意义1
 在设计类的时候属性和行为写在一起，表现事物。
 ```
-class 类名{ 访问权限:  属性 / 行为}；
+class 类名{ 访问权限:  属性 / 行为 }；
 ```
 类: 访问权限，属性，行为
 
@@ -382,13 +382,15 @@ public:
  
  public:
    int m_Age;
-   int *m_height;
+   int *m_Height;
 };
 void test01(){
    Person p1(10,180);
    Person p2(p1);
    cout<<p1.m_Age<<" "<<*p1.m_Height<<endl;
-   cout<<p1.m_Age<<" "<<*p1.m_Height<<endl;
+   cout<<p2.m_Age<<" "<<*p2.m_Height<<endl;
+   // 堆区数据释放时遵循先进后出规则，当执行浅拷贝时，p2会拷贝p1的m_Height的地址
+   // 析构时先析构p2将该地址释放，p1在释放该地址时报错
 }
 
 int main(){
@@ -668,12 +670,51 @@ void test1(){
    // p.func();    //不可以调用普通的成员函数，普通成员函数可以修改属性
 }
 ```
+### 友元（friend）
+在程序里，有些私有属性 也想让类外特殊的一些函数或者类进行访问，就需要用到友元的技术
 
+友元的目的就是让一个函数或者类 访问另一个类中私有成员
 
+三种实现:
+- 全局函数做友元
+- 类做友元
+- 成员函数做友元
 
+#### 全局函数做友元
+全局函数调用类的私有属性
+```
+class 类名{
+   friend + 函数声明；
+}
+```
+实例
+```
+class Building{
 
-
-
+friend void goodGay(Building *building);
+// 全局函数放到类中
+public:
+   Building(){
+      m_SittingRoom = "客厅";
+      m_BeddingRoom = "卧室";	
+   }	
+public:
+   string m_SittingRoom;
+private:
+   string m_BeddingRoom;
+};
+void goodGay(Building *building){
+   cout<<"好基友正在访问"<<building->m_SittingRoom<<endl;
+   cout<<"好基友正在访问"<<building->m_BeddingRoom<<endl;
+}
+int main(){
+   Building b;
+   goodGay(&b);
+   
+   system("pause");
+   return 0;
+}
+```
 
 
 
