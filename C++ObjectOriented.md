@@ -1107,11 +1107,45 @@ class 子类  继承方式 父类1, 继承方式 父类2...
 多继承可能会引发父类中有同名成员出现，需要加作用域区分
 
 C++实际开发中不建议用多继承
+#### 菱形继承
 
+两个派生类继承同一个基类
 
+又有某个类同时继承这两个派生类
 
+这种继承被称为菱形继承，或者钻石继承
+```
+class Animal{
+public:
+   int m_Age;
+};
+// 利用虚继承解决菱形继承问题
+// 继承之前 加上关键字virtual 变为虚继承
+// Animal类称为 虚基类
 
+class Sheep:virtual public Animal{};
+class Tuo:virtual public Animal{};
+class SheepTuo:public Sheep,public Tuo{};
 
+void test01(){
+   SheepTuo st;
+   
+   st.Sheep::m_Age = 18;
+   st.Tuo::m_Age = 28;
+   // 菱形继承，当两个父类拥有相同的数据，需要加作用域区分
+   cout<<"Sheep "<<st.Sheep::m_Age <<endl;
+   cout<<"Tuo "<<st.Tuo::m_Age <<endl;
+   // 菱形继承导致两份分数 但是SheepTuo只用有一份数据就可以，造成了资源的浪费
+   cout << "st.m_Age = " << st.m_Age << endl;
+}
+```
+vbptr 虚基类指针 指向vbtable 虚基类表 继承两个指针
+
+v - virtual 
+
+b - base
+
+ptr - pointer
 
 
 
