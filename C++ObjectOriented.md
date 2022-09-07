@@ -816,7 +816,7 @@ public:
    }
 };
 
-//Person operator(const Person &p1,const Person&p2){
+//Person operator+(const Person &p1,const Person&p2){
 //   Person temp(0,0);
 //   temp.m_A = p1.m_A + p2.m_A;
 //   temp.m_B = p1.m_B + p2.m_B;
@@ -1064,8 +1064,8 @@ void test02(){
 ```
 class 子类:继承方式 父类
 ```
-- 子类 也成为 派生类
-- 父类 也成为 基类
+- 子类 也称为 派生类
+- 父类 也称为 基类
 
 派生类中的成员包含两大部分：
 一类是从基类继承过来的，一类是自己增加的成员。从基类继承过过来的表现其共性，而新增的成员体现了其个性。
