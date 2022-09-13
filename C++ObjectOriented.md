@@ -1223,23 +1223,124 @@ ptr - pointer
 C++中允许父子之间的类型转换，不需要强制类型转换，父类的引用可以直接指向子类的对象。
 
 区别重载和重写
-
+- 重载： 函数名相同，参数不一样
+- 重写： 函数的返回值类型、函数名、形参列表中的所有内容要相同
 ```
+
 class Animal{
-   void Speak(){
+public:
+   virtual void Speak(){
       cout<<"动物在说话"<<endl;
    }
 };
 
 class Cat:public Animal{
+public:
+// 虚函数
    void Speak(){
       cout<<"小猫在说话"<<endl;
-   
    }
+};
 
+class Dog:public Animal{
+public:
+   void speak(){
+      cout<<"小狗在说话"<<endl;
+   }
+}
+
+
+// 地址早绑定 在编译阶段确定函数地址
+// 如果想让猫说话，那么函数地址就不能提前绑定，需要在运行阶段绑定 地址晚绑定
+
+// 动态多态的满足条件
+// 子类要继承父类
+// 子类要重写父类的函数
+
+// 动态多态的使用
+// 父类的指针或者引用指向子类对象
+
+void doSpeak(Animal &animal){
+// Animal &animal = cat;
+
+public:
+   animal.Speak();
+}
+
+void test01(){
+   Cat cat;
+   doSpeak(cat);
 }
 
 ```
+子类重写父类的虚函数时，子类的函数处的virtual可写可不写，父类肯定要写
+#### 多态原理剖析
+animal内部结构：
+
+vfptr 虚函数(表) v virtual  f function  ptr  pointer ：指针会指向一个虚函数表
+
+vftable 虚函数表（记录表内虚函数的地址） v virtual  f function  t table：&Animal::speak(成员函数的函数地址要加上作用域)
+
+cat的内部结构（未重写）：
+当只有继承时，子类全部继承父类的，子类的vftable中也是 
+
+vfptr 继承一个指针
+
+vftable 构建子类的虚函数表 ：&Animal::speak
+
+当子类重写父类的虚函数时，父类不变，子类中的虚函数表内部会替换成子类的虚函数地址：&Cat::speak
+
+当父类的指针或者引用指向子类对象时，发生多态
+```
+Animal  &animal = cat;
+animal.speak();
+```
+animal调用speak时，由于指向的是cat对象，所以会从cat的虚函数表中找这个函数
+
+#### 多态案例 —— 计算器类
+多态的优点：
+- 代码组织结构清晰
+- 可读性强
+- 利于前期和后期扩展以及维护
+```
+class Calculator {
+public:
+    int getResult(string oper) {
+        if (oper == "+") {
+            return m_Num1 + m_Num2;
+        }
+        else if (oper == "-") {
+            return m_Num1 - m_Num2;
+        }
+        else if (oper == "*") {
+            return m_Num1 * m_Num2;
+        }
+    }
+public:
+    int m_Num1;
+    int m_Num2;
+};
+
+void test01() {
+    Calculator c;
+    c.m_Num1 = 2;
+    c.m_Num2 = 4;
+    cout << c.getResult("+") << endl;
+    cout << c.getResult("-") << endl;
+    cout << c.getResult("*") << endl;
+}
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
