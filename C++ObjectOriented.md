@@ -1207,7 +1207,7 @@ b - base
 
 ptr - pointer
 
-## 多态
+## 多态（父类指针指向子类对象）
 ### 多态的基本概念
 
 多态分为两类
@@ -1330,7 +1330,352 @@ void test01() {
     cout << c.getResult("*") << endl;
 }
 
+class AbstractCalculator {
+public:
+
+    virtual int getResult() {
+        return 0;
+    }
+public:
+    int m_Num1;
+    int m_Num2;
+};
+
+class AddCalculator:public AbstractCalculator {
+public:
+    int getResult() {
+        return m_Num1 + m_Num2;
+    }
+};
+
+class SubCalculator :public AbstractCalculator {
+public:
+    int getResult() {
+        return m_Num1 - m_Num2;
+    }
+};
+class MulCalculator :public AbstractCalculator {
+public:
+    int getResult() {
+        return m_Num1 * m_Num2;
+    }
+};
+
+void test02() {
+    AbstractCalculator* a = new AddCalculator;
+    a->m_Num1 = 20;
+    a->m_Num2 = 19;
+    cout << a->getResult() << endl;
+    delete a;
+
+    a = new  SubCalculator;
+    a->m_Num1 = 20;
+    a->m_Num2 = 19;
+    cout << a->getResult() << endl;
+    delete a;
+
+    a = new MulCalculator;
+    a->m_Num1 = 20;
+    a->m_Num2 = 19;
+    cout << a->getResult() << endl;
+    delete a;
+ 
+}
 ```
+#### 纯虚函数和抽象类
+
+在多态中，通常父类中虚函数的实现是毫无意义的，主要都是调用子类重写的内容
+
+因此可以将虚函数改为**纯虚函数**
+
+纯虚函数语法：
+```
+virtual 返回值类型 函数名 (参数列表) = 0 ；
+```
+
+当类中有了纯虚函数（有一个就叫），这个类也称为==抽象类==
+
+**抽象类特点**：
+
+ * 无法实例化对象
+ * 子类必须重写抽象类中的纯虚函数，否则也属于抽象类
+
+```
+class Base{
+public:
+   virtual void func()=0;
+};
+
+class Son : public Base{
+public:
+   void func(){
+      cout<<"Son调用func"<<endl;
+   }
+};
+
+void test01(){
+   Base *base = new Son;
+   base->func();
+   delete base;
+}
+
+```
+#### 多态案例2
+```
+class AbstractDrinking {
+public:
+	virtual void Boil() = 0;
+	virtual void Brew() = 0;
+	virtual void PourInCup() = 0;
+	virtual void PutSomething() = 0;
+
+	void MakeDrink() {
+		Boil();
+		Brew();
+		PourInCup();
+		PutSomething();
+	}
+ };
+
+class Coffee : public AbstractDrinking {
+public:
+	void Boil() {
+		cout << "煮农夫山泉" << endl;
+	}
+	void Brew() {
+		cout << "冲泡咖啡" << endl;
+	}
+	void PourInCup() {
+		cout << "倒入杯中" << endl;
+	}
+	void PutSomething() {
+		cout << "加入一些东西" << endl;
+	}
+};
+
+class Tea : public AbstractDrinking {
+public:
+	void Boil() {
+		cout << "煮矿泉水" << endl;
+	}
+	void Brew() {
+		cout << "冲泡茶水" << endl;
+	}
+	void PourInCup() {
+		cout << "倒入杯中" << endl;
+	}
+	void PutSomething() {
+		cout << "加入一些东西" << endl;
+	}
+};
+
+void doWork(AbstractDrinking* abs) {
+	abs->MakeDrink();
+	delete abs;
+}
+
+void test01() {
+	doWork(new Coffee);
+	cout << "--------------------------" << endl;
+	doWork(new Tea);
+}
+```
+#### 虚析构和纯虚析构
+多态使用时，如果子类中有属性开辟到堆区，那么父类指针在释放时无法调用到子类的析构代码
+
+解决方式：将父类中的析构函数改为**虚析构**或者**纯虚析构**
+
+虚析构和纯虚析构共性：
+
+* 可以解决父类指针释放子类对象
+* 都需要有具体的函数实现
+
+虚析构和纯虚析构区别：
+
+* 如果是纯虚析构，该类属于抽象类，无法实例化对象
+
+虚析构：
+```
+virtual ~类名(){}
+```
+纯虚析构（需要声明也需要实现）：
+```
+virtual ~类名() = 0;
+类名::~类名(){}
+```
+```
+// 父类指针在析构的时候不会调用子类中的析构函数，导致子类如果有堆区属性，出现内存泄漏
+```
+- 虚析构或纯虚析构就是用来解决通过父类指针释放子类对象
+- 如果子类中没有堆区数据，可以不写为虚析构或纯虚析构
+- 拥有纯虚析构函数的类也属于抽象类
+```
+class Animal {
+public:
+	Animal() {
+		cout << "animal的构造函数" << endl;
+	}
+	//virtual ~Animal() {
+	//	cout << "animal的析构函数" << endl;
+	//}
+	virtual ~Animal() = 0;
+	virtual void Speak() = 0;
+};
+Animal::~Animal() {
+	cout << "animal的析构函数" << endl;
+}
+
+class Cat: public Animal {
+public:
+	Cat(string name) {
+		m_Name = new string(name);
+		cout << "Cat的构造函数" << endl;
+	}
+	~Cat() {
+		if (m_Name != NULL) {
+			delete m_Name;
+			m_Name = NULL;
+		}
+		cout << "Cat的析构函数" << endl;
+	}
+	void Speak() {
+		cout << *m_Name << "在说话" << endl;
+	}
+
+public:
+	string* m_Name;
+};
+
+void test01() {
+	Animal* abs = new Cat("TGo");
+	abs->Speak();
+	delete abs;
+}
+```
+#### 案例三电脑组装
+```
+class CPU {
+public:
+	virtual void calculator() = 0;
+};
+class VideoCard {
+public:
+	virtual void display() = 0;
+};
+class Memory {
+public:
+	virtual void storage() = 0;
+};
+
+class Computer {
+public:
+	Computer(CPU* cpu, VideoCard* vc, Memory* mem) {
+		m_Cpu = cpu;
+		m_Vc = vc;
+		m_Mem = mem;
+	}
+
+	~Computer() {
+		if (m_Cpu != NULL) {
+			delete m_Cpu;
+			m_Cpu = NULL;
+		}
+		if (m_Vc != NULL) {
+			delete m_Vc;
+			m_Vc = NULL;
+		}
+		if (m_Mem != NULL) {
+			delete m_Mem;
+			m_Mem = NULL;
+		}
+		cout << "computer析构已经调用" << endl;
+	}
+
+	void doWork() {
+		m_Cpu->calculator();
+		m_Vc->display();
+		m_Mem->storage();
+	}
+
+private:
+	CPU* m_Cpu;
+	VideoCard* m_Vc;
+	Memory* m_Mem;
+};
+
+
+class InterCpu : public CPU {
+public:
+	virtual void calculator() {
+		cout << "Iner的CPU开始计算了" << endl;
+	}
+};
+class InterVideoCard : public VideoCard {
+public:
+	void display() {
+		cout << "Iner的显卡开始显示了" << endl;
+	}
+};
+
+class InterMemory : public Memory {
+public:
+	virtual void storage() {
+		cout << "Iner的内存开始存储了" << endl;
+	}
+};
+
+class LenovoCpu : public CPU {
+public:
+	virtual void calculator()
+	{
+		cout << "Lenovo的CPU开始计算了！" << endl;
+	}
+};
+class LenovoVideoCard : public VideoCard {
+public:
+	virtual void display()
+	{
+		cout << "Lenovo的显卡开始显示了！" << endl;
+	}
+
+};
+
+class LenovoMemory : public Memory {
+public:
+	virtual void storage()
+	{
+		cout << "Lenovo的内存条开始存储了！" << endl;
+	}
+};
+
+void test01() {
+	CPU* intercpu = new InterCpu;
+	VideoCard* intervs = new InterVideoCard;
+	Memory* intermem = new InterMemory;
+	Computer* computer1 = new Computer(intercpu, intervs, intermem);
+	computer1->doWork();
+	//delete computer1;
+	cout << "--------------------" << endl;
+
+	CPU* lenovocpu = new LenovoCpu;
+	VideoCard* lenovovs = new LenovoVideoCard;
+	Memory* lenovomem = new LenovoMemory;
+	Computer compuer2(lenovocpu, intervs, intermem);
+	compuer2.doWork();
+
+	cout << "--------------------" << endl;
+	Computer* computer3 = new Computer(new LenovoCpu, new LenovoVideoCard, new InterMemory);
+	computer3->doWork();
+
+}
+```
+
+
+
+
+
+
+
 
 
 
