@@ -1793,6 +1793,7 @@ ios::binary
 ostream& write(const char*buffer,int len);
 ```
 参数解释：字符指针buffer指向内存中一段存储空间。len是读写的字节数
+
 **对文件进行操作时，最好用C风格字符串**
 ```
 class Person {
