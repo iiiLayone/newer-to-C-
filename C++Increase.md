@@ -1114,7 +1114,7 @@ void test01()
 **deque与vector区别：**
 
 * vector对于头部的插入删除效率低，数据量越大，效率越低
-* deque相对而言，对头部的插入删除速度回比vector快
+* deque相对而言，对头部的插入删除速度会比vector快
 * vector访问元素时的速度会比deque快,这和两者内部实现有关
 
 deque内部工作原理:
@@ -1393,6 +1393,28 @@ void test01()
 }
 ```
 sort算法非常实用，使用时包含头文件 algorithm即可
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
