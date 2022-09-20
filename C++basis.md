@@ -518,7 +518,73 @@ int main() {
 }
 ```
 
+```
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
 
+class Hero {
+public:
+	Hero(string name, int age, string sex) :m_Name(name),m_Age(age), m_Sex(sex) {}
+	string m_Name;
+	int m_Age;
+	string m_Sex;
+};
+
+class HeroPrint {
+public:
+	void operator()(Hero &h1) {
+		cout << h1.m_Name << " " << h1.m_Age << " " << h1.m_Sex << endl;
+	}
+};
+
+class MyCompare {
+public:
+	bool operator()(Hero h1,Hero h2) {
+		return h1.m_Age > h2.m_Age;
+	}
+};
+
+void BubbleSort(vector<Hero>& v) {
+	for (int i = 0; i < v.size()-1; ++i) {
+		for (int j = 0; j < v.size() - 1 - i; ++j) {
+			if (v[j].m_Age > v[j+1].m_Age) {
+				Hero htemp = v[j];
+				v[j] = v[j+1];
+				v[j+1] = htemp;
+			}
+		}
+	}
+}
+
+int main() {
+	vector<Hero>v;
+	Hero h1 = { "刘备",23,"男" };
+	Hero h2 = { "关羽",22,"男" };
+	Hero h3 = { "张飞",29,"男" };
+	Hero h4 = { "赵云",21,"男" };
+	Hero h5 = { "貂蝉",98,"女" };
+	v.push_back(h1);
+	v.push_back(h2);
+	v.push_back(h3);
+	v.push_back(h4);
+	v.push_back(h5);
+
+	for_each(v.begin(), v.end(), HeroPrint());
+	cout << "--------------------" << endl;
+
+	sort(v.begin(), v.end(), MyCompare());
+	for_each(v.begin(), v.end(), HeroPrint());
+	cout << "--------------------" << endl;
+	BubbleSort(v);
+	for_each(v.begin(), v.end(), HeroPrint());
+
+	system("pause");
+	return 0;
+}
+```
 
 
 
