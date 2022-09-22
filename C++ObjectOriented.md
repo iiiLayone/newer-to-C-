@@ -969,6 +969,48 @@ void test01(){
    cout<<"p3的年龄为："<<*p3.m_Age<<endl;
 }
 ```
+二刷有问题的代码
+```
+class Person {
+public:
+	Person(int age) {
+		m_Age = new int(age);
+	}
+	Person(const Person& p) {
+		cout << "拷贝构造函数" << endl;
+		if (m_Age != nullptr) {
+			delete m_Age;
+			m_Age = nullptr;
+		}
+		m_Age = new int(*p.m_Age);
+	}
+	Person &operator=(Person p) {      //；应该是拷贝构造时除了问题，将这里变成引用就不报错了
+		if (this->m_Age != nullptr) {
+			delete this->m_Age;
+			m_Age = nullptr;
+		}
+		this->m_Age = new int(*p.m_Age);
+		return *this;
+	}
+
+	~Person() {
+		if (m_Age != nullptr) {
+			delete m_Age;
+			m_Age = nullptr;
+		}
+	}
+
+public:
+	int* m_Age;
+
+};
+
+void test01() {
+	Person p1(20);
+	Person p2(18);
+	p2 = p1;
+};
+```
 #### 关系运算符重载
 重载关系运算符，可以让两个自定义类型对象进行对比操作
 ```
