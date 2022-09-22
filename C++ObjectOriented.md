@@ -903,7 +903,6 @@ public:
    
    }
    
-   
 private:
    int m_Num;
 };
@@ -922,13 +921,6 @@ void test02(){
    MyInteger myInt;
    cout << myInt++ << endl;
    cout << myInt << endl;
-}
-
-int main(){
-   test01();
-   test02();
-   system("pause");
-   return 0;
 }
 ```
 前置递增返回引用，后置递增返回值
