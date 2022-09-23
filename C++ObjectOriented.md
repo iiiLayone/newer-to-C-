@@ -1554,6 +1554,7 @@ public:
 	//virtual ~Animal() {
 	//	cout << "animal的析构函数" << endl;
 	//}
+	//纯虚析构 需要声明也需要实现
 	virtual ~Animal() = 0;
 	virtual void Speak() = 0;
 };
