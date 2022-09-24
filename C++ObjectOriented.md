@@ -1782,6 +1782,7 @@ ifs.open("文件路径",打开方式);
 ```
 4.读数据
 四种方式读取
+
 5.关闭文件
 ```
 ifs.close();
@@ -1841,7 +1842,8 @@ public:
 
 void test01() {
 	ofstream ofs("Person.txt", ios::out | ios::binary);
-	Person p = { "xiaoyi",3 };
+	Person p = { "xiaoyi",3 };     
+	// 这里还必须这样初始化哦，c++提供的默认构造函数是空实现，另一个提供的是拷贝构造。
 	ofs.write((const char*)&p,sizeof(p));
 	ofs.close();
 }
