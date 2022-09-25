@@ -101,7 +101,7 @@ const int *p2=&i;    //允许改变p2的值，是一个底层
 ```
 const int MAX=20;   //是 
 int i=10;           //不是 不是const int
-const in sz=func(); //具体值等到运行时才能获取，所以不是
+const int sz=func(); //具体值等到运行时才能获取，所以不是
 ```
 声明为constexpr的变量一定是一个常量，且必须用常量表达式初始化。
 
@@ -136,7 +136,7 @@ typedef double base,*p;    // base是double的同义词，p是double*的同义�
 让编译器替我们分析所属的类型
 #### decltype 62
 选择并返回操作数的数据类型（得到类型，却不计算表达式的值）
-- 如果表达式内容时解引用操作，decltype将得到引用类型，必须初始化 
+- 如果表达式内容是解引用操作，decltype将得到引用类型，必须初始化 
 - decltype((val)) （双层括号）的结果永远时引用
 - decltype(val)    直接返回该变量的类型，只有当val是引用时才是引用
 ```
@@ -182,6 +182,10 @@ size()的返回类型是**string::size_type**无符号的整数。
 - 函数从给定输入流读取内容，直到换行符停止（换行符也被读进来了）
 - 将所读的内容存入到string对象中，不存换行符（一开始就是换行符，则空string）
 
+```
+getline(cin,line);
+```
+
 #### 字面值和string相加
 ```
 string s1;
@@ -191,13 +195,71 @@ string s4 = "dff"+"dff"+s1; //错误 不能把字面值相加
 ```
 **字符串字面值**并不是标准库类型string的对象。字符串字面值和string是不同类型
 
+#### cctype头文件 82
+处理某个特定字符
+```
+isalnum(c)  //c是字母或数字时为真
 
+...
+```
 
+#### 范围for语句 82
+```
+for(declaration :expression)
+  statement;
+```
+- expression 部分时一个对象，用于表示一个序列
+- declaration 部分负责定义一个变量，用于访问序列中的每个基础元素。
 
+```
+string str("something");
+for(auto c:str){                //要修改c的值可一个使用引用  
+  cout<<c<<endl;
+}
+```
+#### 访问部分字符 84
+通过下标或者迭代器
 
+#### 逻辑&&  85
+C++规定只有左侧对象为真时才会检查右侧对象的情况
 
+#### vector 86
+使用模板时，应指出编译器把类或者函数实例化何种类型。
 
+常见方式时先定义一个**空vector**,运行到获取元素时在逐一添加。！！！！！
 
+直接初始化适用于：
+- 初始值已知且数量较少
+- 初始值是另一个对象的副本
+- 所有元素初始值都一样
 
+可以提供vector对象容纳的元素数量而略去初始值，此时会创建一个值初始化的元素初值，并把它赋给所有元素。初始值由vector对象中元素类型决定。如果是int全初始化0，string全初始化为""。
+```
+vector<int> v()  //圆括号可以说提供的值用来构造对象
+vector<int>v{}   //花括号表述成列表初始化。会把花括号中的值当成元素初始值列表来处理
+```
+初始化使用了花括号的形式但是提供的值又不能用来列表初始化就需要考虑用这样的值来构造对象了。
 
+```
+vector<string>v1{"hi"};     //列表初始化，只有一个元素
+vector<string>v2("hi");     //错误 不能使用字面值初始化vector
+vector<string>v3{10};       //v3有10个默认初始化元素
+vector<string>v4{10,"hi"};  //v4有10个"hi"
+```
+列表初始化vector,花括号中的值必须与元素类型相同。
+
+```
+vector<int>v={1,23,34};
+for(auto &i:v){
+  i*=i;
+}
+for(auto i:v){
+  cout<<i<<" ";
+}
+```
+**vector一定要包含元素类型！！！**
+```
+vector<int>v;
+vector<int>::size_type;
+```
 
