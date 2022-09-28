@@ -262,4 +262,30 @@ for(auto i:v){
 vector<int>v;
 vector<int>::size_type;
 ```
+vector对象的下标运算符可用于访问已存在的元素，不能用于添加元素
+
+#### 迭代器 95
+所有标准库容器都可以使用迭代器
+```
+auto b=v.begin();
+auto e=v.end();              //不清楚迭代器类型时，使用auto
+```
+cbegin和cend。不论vector对象本身是否是常量，都返回const_iterator
+```
+auto it3=v.cbegin();
+```
+```
+(*it).empty();      //解引用it，然后调用结果对象的empty成员
+*it.empty();        //错误，试图访问it名为empty的成员，但是it没有empty成员
+```
+- 不要再范围for循环中向vector对象添加元素
+- 使用了迭代器的循环体不要向迭代器所属容器添加元素
+
+
+
+
+
+
+
+
 
