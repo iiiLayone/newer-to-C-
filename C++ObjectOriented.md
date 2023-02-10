@@ -99,7 +99,7 @@ int & test1(){
 2. 如果函数的返回值是引用，函数的调用可以为左值
 ```
 int &test2(){
-  int a = 10;
+  static int a = 10; //静态变量，存放在全局区，再程序结束后系统释放
   return a;
 }
 int &ref = test2();
