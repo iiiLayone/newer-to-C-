@@ -188,6 +188,8 @@ void func(const int &a); //引用可以作为函数重载的条件
 int a = 10;
 func(a)   //调用第一个
 func(10)  //调用const的 因为引用必须是一段合法的内存空间 int &a = 10错误
+	  //const int &a =10  可以
+//加 const 和不加const可以作为重载条件
 ```
 - 函数重载碰到函数默认参数
 ```
