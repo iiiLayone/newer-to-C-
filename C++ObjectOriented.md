@@ -57,6 +57,29 @@ return p;
 int *p = new int(10);       //小括号创建一个变量
 int *array = new int [10];  //中括号创建一个有10个变量的数组
 delete[] array;             //释放数组 delete后加[] 
+
+class Person
+{
+public:
+	Person()
+	{
+		cout<<"Person()"<<endl;
+	}
+	~Person()
+	{
+		cout<<"~Person()"<<endl;	
+	}
+};
+void test()
+{
+	Person p; //栈区开辟的内存，编译器自动分配释放 编译器自动调用析构函数
+	Person*p1 = new Person;
+	delete p1; //这种必须delete p1才能调用析构函数！！！	
+}
+int main()
+{
+	test();
+}
 ```
 ## 引用
 ### 基本使用 
